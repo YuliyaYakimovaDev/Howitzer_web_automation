@@ -2,6 +2,8 @@ require 'rspec'
 require 'capybara/rspec'
 require_relative '../boot'
 require 'mail'
+require 'factory_girl'
+include Gen
 
 Dir[File.join(File.dirname(__FILE__), 'support', '**', '*.rb')].each { |f| require f }
 

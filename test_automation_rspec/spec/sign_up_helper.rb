@@ -1,25 +1,19 @@
 module SignUpHelper
-  def sign_up_as(user)
-    SignUpPage.
-        open.fill_form(
-        first_name: user.full_name,
-        email: user.email,
-        password: user.password,
-        password_confirmation: user.password).
-        submit_form
-    ConfirmationInstructionEmail.
-        find_by_recipient(user.email).
-        confirm_my_account
-    expect(LoginPage.given.text).to include('Your account was successfully confirmed.')
+
+  def sign_up_as(first_name,last_name, email, password,password2)
+    log.info "Sign up with: First name=#{first_name}, LastName=#{last_name}, Email=#{email}, Password=#{password}, PasswordConfirmation=#{password2}"
+    fill_form(first_name,last_name, email, password, password2)
+    sign_up_submit
+    ConfirmationInstructionEmail.find_by_recipient(email).confirm_my_account
   end
 
-  def fill_form(id_first_name, id_last_name, id_email, id_password, id_password2)
+  def fill_form(first_name, last_name,email, password, password2)
     log.info "fill new user's form"
-    fill_in(field_locator(:firstname), with: id_first_name) unless id_first_name.nil?
-    fill_in(field_locator(:lastname), with: id_last_name) unless id_last_name.nil?
-    fill_in(field_locator(:email), with: id_email) unless id_email.nil?
-    fill_in(field_locator(:password), with: id_password) unless id_password.nil?
-    fill_in(field_locator(:verifypassword), with: id_password2) unless id_password2.nil?
+    fill_in(field_locator(:email), with: email) unless email.nil?
+    fill_in(field_locator(:firstname), with: first_name) unless first_name.nil?
+    fill_in(field_locator(:lastname), with: last_name) unless last_name.nil?
+    fill_in(field_locator(:password), with: password) unless password.nil?
+    fill_in(field_locator(:verifypassword), with: password2) unless password2.nil?
     self
   end
 
@@ -49,7 +43,7 @@ module SignUpHelper
   end
 
   def log_in_as_admin
-    LoginPage.
+    SignUpPage.
         open.
         fill_form(email: settings.def_test_user, password: settings.def_test_pass).
         submit_form
